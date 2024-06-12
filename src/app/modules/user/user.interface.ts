@@ -9,6 +9,7 @@ export interface IUser {
   role: 'user' | 'admin'
 }
 
-export interface UserModelMethods extends Model<IUser> {
+export interface IUserModelMethods extends Model<IUser> {
   isUserExist(email: string): Promise<IUser | null>
+  isPasswordMatched(email: string, password: string): Promise<boolean>
 }
