@@ -6,6 +6,7 @@ import handleZodError from '../errors/handleZodError'
 import { AppError } from '../errors/AppError'
 import handleDuplicateError from '../errors/handleDuplicateError'
 import handleValidationError from '../errors/handleValidationError'
+import handleCastError from '../errors/handleCastError'
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let status = 500
@@ -26,14 +27,12 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     status = simplifiedError?.status
     message = simplifiedError?.message
     errorMessages = simplifiedError?.errorMessages
-  }
-  // else if (err?.name === 'CastError') {
-  //   const simplifiedError = handleCastError(err);
-  //   status = simplifiedError?.statusCode;
-  //   message = simplifiedError?.message;
-  //   errorMessages = simplifiedError?.errorMessages;
-  // }
-  else if (err?.code === 11000) {
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err)
+    status = simplifiedError?.status
+    message = simplifiedError?.message
+    errorMessages = simplifiedError?.errorMessages
+  } else if (err?.code === 11000) {
     const simplifiedError = handleDuplicateError(err)
     status = simplifiedError?.status
     message = simplifiedError?.message
