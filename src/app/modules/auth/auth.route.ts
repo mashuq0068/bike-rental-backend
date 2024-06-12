@@ -5,7 +5,7 @@ import { authControllers } from './auth.controller'
 const router = express.Router()
 router.post(
   '/signup',
-//   zodValidation(createUserValidationSchema),
+  zodValidation(createUserValidationSchema),
   authControllers.signUpUser,
 )
 export const authRoutes = router

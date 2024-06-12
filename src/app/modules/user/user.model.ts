@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose'
 import { IUser } from './user.interface'
+import bcrypt from 'bcrypt'
+import config from '../../config'
 
 const userSchema = new Schema<IUser>(
   {
@@ -16,7 +18,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: [true, 'password is required'],
-      select:0
+      select: 0,
     },
     phone: {
       type: String,
@@ -39,8 +41,16 @@ const userSchema = new Schema<IUser>(
     timestamps: true,
   },
 )
-userSchema.pre('save' , async function(next) {
-    
+userSchema.pre('save', async function (next) {
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_rounds),
+  )
+  next()
+})
+userSchema.post('save', async function (doc, next) {
+  doc.password = "###",
+  next()
 })
 export const User = model<IUser>('User', userSchema)
 
