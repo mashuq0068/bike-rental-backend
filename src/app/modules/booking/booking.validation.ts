@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Zod schema for creating a booking
 export const createBookingValidationSchema = z.object({
   body: z.object({
-    userId: z.string({ required_error: 'userId is required' }),
+    userId: z.string().optional(),
     bikeId: z.string({ required_error: 'bikeId is required' }),
     startTime: z.string({ required_error: 'startTime is required' }),
     returnTime: z.string().optional(),
