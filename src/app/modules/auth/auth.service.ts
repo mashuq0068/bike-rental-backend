@@ -27,7 +27,7 @@ const login = async (payload: ILoginUser) => {
     password: payload?.password,
   }
   const token = jwt.sign(data, config.jwt_token_secret as string, {
-    expiresIn: '1h',
+    expiresIn: '2h',
   })
   return {
     token,

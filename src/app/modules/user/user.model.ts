@@ -61,7 +61,6 @@ userSchema.statics.isPasswordMatched = async function (
 ) {
   const user = await User.findOne({ email: email }).select('+password')
   const result = await bcrypt.compare(password, user?.password as string)
-  console.log(result)
   return result
 }
 export const User = model<IUser, IUserModelMethods>('User', userSchema)

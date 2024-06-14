@@ -5,11 +5,11 @@ import { AppError } from '../errors/AppError'
 import httpStatus from 'http-status'
 import catchAsync from '../utils/catchAsync'
 import { User } from '../modules/user/user.model'
+import { TUserRole } from '../modules/user/user.interface'
 
-const auth = () => {
+const auth = (...roles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization
-    console.log(token)
     if (!token || !token.startsWith('Bearer')) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
@@ -25,6 +25,13 @@ const auth = () => {
 
     if (!user) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'No user found!')
+    }
+    console.log(user?.role);
+    if (roles && !roles.includes(user?.role)) {
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'You have no access to this route',
+      )
     }
     req.user = decoded
     next()
