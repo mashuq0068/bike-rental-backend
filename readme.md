@@ -19,7 +19,7 @@
 - They can see all bikes for rental and can book the bikes
 - But an admin can create bike, update bike details, delete bike, return the bike and other important things
 - As an user you can just book a bike or update your profile
-- And user has to according to his rental hours
+- And user has to pay money according to his rental hours
 
 ## Installation
 
