@@ -27,13 +27,14 @@ const login = async (payload: ILoginUser) => {
     password: payload?.password,
   }
   const token = jwt.sign(data, config.jwt_token_secret as string, {
-    expiresIn: '2h',
+    expiresIn: '5h',
   })
   return {
     token,
     user,
   }
 }
+
 export const authServices = {
   signUp,
   login,

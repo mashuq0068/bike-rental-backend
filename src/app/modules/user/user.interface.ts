@@ -7,7 +7,7 @@ export interface IUser {
   password: string
   phone: string
   address: string
-  role: 'user' | 'admin'
+  role?: 'user' | 'admin'
 }
 export type TUserRole = keyof typeof USER_ROLE
 

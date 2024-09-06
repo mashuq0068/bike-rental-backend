@@ -1,6 +1,5 @@
 import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
-import { User } from '../user/user.model'
 import { authServices } from './auth.service'
 
 const signUpUser = catchAsync(async (req, res) => {

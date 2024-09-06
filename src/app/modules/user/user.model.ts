@@ -30,7 +30,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      required: [true, 'role is required'],
+      // required: [true, 'role is required'],
+      default:"user",
       enum: {
         values: ['user', 'admin'],
         message: '{VALUE} is not valid role',
@@ -49,12 +50,22 @@ userSchema.pre('save', async function (next) {
   next()
 })
 userSchema.post('save', async function (doc, next) {
-  ;(doc.password = '###'), next()
+  doc.password = '###'
+  next()
 })
 userSchema.statics.isUserExist = async function (email: string) {
   const user = await User.findOne({ email: email })
   return user
 }
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
+};
+
 userSchema.statics.isPasswordMatched = async function (
   email: string,
   password: string,

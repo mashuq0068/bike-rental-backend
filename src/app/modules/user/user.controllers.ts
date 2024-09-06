@@ -1,4 +1,4 @@
-import { JwtPayload } from 'jsonwebtoken'
+// import { JwtPayload } from 'jsonwebtoken'
 import catchAsync from '../../utils/catchAsync'
 import { userServices } from './user.service'
 import sendResponse from '../../utils/sendResponse'
