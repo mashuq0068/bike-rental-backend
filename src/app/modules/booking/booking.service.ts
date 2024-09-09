@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtPayload } from 'jsonwebtoken'
 import { IBooking } from './booking.interface'
 import { Booking } from './booking.model'
 import { User } from '../user/user.model'
 import { AppError } from '../../errors/AppError'
 import httpStatus from 'http-status'
-import mongoose from 'mongoose'
 import { Bike } from '../bike/bike.model'
+import moment from 'moment'
+import mongoose from 'mongoose'
 
 const createRentalIntoDB = async (userData: JwtPayload, payload: IBooking) => {
   const user = await User.findOne({ email: userData?.email })
@@ -52,7 +54,7 @@ const createRentalIntoDB = async (userData: JwtPayload, payload: IBooking) => {
   }
 }
 
-const returnBikeFromDB = async (id: string) => {
+const returnBikeFromDB = async (id: string, payload: Partial<IBooking>) => {
   const rental = await Booking.findById(id)
   if (!rental) {
     throw new AppError(httpStatus.BAD_REQUEST, 'No bike rental found!')
@@ -75,16 +77,23 @@ const returnBikeFromDB = async (id: string) => {
       },
     )
     const rentalStartTime = new Date(rental?.startTime)
-    const rentalEndTime = new Date()
+
+    const rentalEndTime = payload?.returnTime
+      ? moment(payload.returnTime, 'YYYY-MM-DD HH:mm A').isValid()
+        ? moment(payload.returnTime, 'YYYY-MM-DD HH:mm A').toDate()
+        : new Date() // Fallback if the date is invalid
+      : new Date()
+
     const differenceInHours =
       (rentalEndTime?.getTime() - rentalStartTime.getTime()) / (1000 * 60 * 60)
+     console.log(differenceInHours);
     const totalRentalCost = differenceInHours * Number(rentedBike?.pricePerHour)
     const result = await Booking.findByIdAndUpdate(
       id,
       {
         $set: {
           returnTime: rentalEndTime,
-          totalCost:  Math.ceil(totalRentalCost),
+          totalCost: Math.ceil(totalRentalCost),
           isReturned: true,
         },
       },
@@ -107,18 +116,45 @@ const returnBikeFromDB = async (id: string) => {
   }
 }
 
-const getAllRentalsFromDB = async (userData: JwtPayload) => {
-  const user = await User.findOne({ email: userData?.email })
-  if (user) {
-    const result = await Booking.find({ userId: user?._id })
-    return result
-  } else {
+const getAllRentalsFromDB = async () => {
+  const result = await Booking.find()
+    .populate({ path: 'bikeId' })
+    .populate({ path: 'userId' })
+  return result
+}
+const getOwnBookingsFromDB = async (payload: JwtPayload) => {
+  // Await the user result from findById
+  const user = await User.findOne({ email: payload?.email })
+  if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'No user found!')
   }
+
+  // Await the bookings result
+  const paid = await Booking.find({
+    userId: user._id,
+    isPaid: true,
+  }).populate('bikeId')
+  const unPaid = await Booking.find({
+    userId: user._id,
+    isPaid: false,
+    isReturned: true,
+  }).populate('bikeId')
+
+  return {
+    paid,
+    unPaid,
+  }
+}
+
+const updateSingleBooking = async (id: string, payload: IBooking) => {
+  const result = await Booking.findByIdAndUpdate(id, { $set: payload })
+  return result
 }
 
 export const bookingServices = {
   createRentalIntoDB,
   getAllRentalsFromDB,
-  returnBikeFromDB
+  returnBikeFromDB,
+  getOwnBookingsFromDB,
+  updateSingleBooking,
 }

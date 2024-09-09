@@ -12,8 +12,11 @@ router.get(
 )
 router.put(
   '/me',
-  auth(USER_ROLE.admin , USER_ROLE.user),
+  auth(USER_ROLE.admin, USER_ROLE.user),
   zodValidation(updateUserValidationSchema),
   userControllers.updateProfile,
 )
+router.get('/', auth(USER_ROLE.admin), userControllers.getAllUsers)
+router.patch('/:id', auth(USER_ROLE.admin), userControllers.updateSingleUser)
+router.delete('/:id' , auth(USER_ROLE.admin) , userControllers.deleteSingleUser)
 export const userRoutes = router

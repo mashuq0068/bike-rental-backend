@@ -30,6 +30,10 @@ const bookingSchema = new Schema<IBooking>({
     type: Boolean,
     default: false,
   },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
 })
 bookingSchema.pre('save', async function (next) {
   const bike = await Bike.findById(this?.bikeId)

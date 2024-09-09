@@ -4,6 +4,7 @@ import { z } from 'zod'
 export const createBikeValidationSchema = z.object({
   body: z.object({
     name: z.string({ required_error: 'name is required' }),
+    image: z.string({ required_error: 'image is required' }),
     description: z.string({ required_error: 'description is required' }),
     pricePerHour: z.number({ required_error: 'price per hour is required' }),
     isAvailable: z.boolean().default(true),
@@ -18,6 +19,7 @@ export const createBikeValidationSchema = z.object({
 export const updateBikeValidationSchema = z.object({
   body: z.object({
     name: z.string().optional(),
+    image: z.string().optional(),
     description: z.string().optional(),
     pricePerHour: z.number().optional(),
     isAvailable: z.boolean().optional(),

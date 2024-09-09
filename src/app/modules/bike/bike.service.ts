@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prefer-const */
 import httpStatus from 'http-status'
 import { AppError } from '../../errors/AppError'
 import { IBike } from './bike.interface'
@@ -7,8 +9,22 @@ const createBikeIntoDB = async (payload: IBike) => {
   const result = await Bike.create(payload)
   return result
 }
-const getAllBikes = async () => {
-  const result = await Bike.find()
+const getAllBikes = async (searchTerm: string | null) => {
+  let query: any = {}
+
+  if (searchTerm) {
+    query = {
+      name: { $regex: searchTerm, $options: 'i' },
+      isAvailable: true,
+    }
+  }
+
+  const result = await Bike.find(query)
+  return result
+}
+
+const getSingleBikeFromDB = async (id: string) => {
+  const result = await Bike.findById(id)
   return result
 }
 const updateSingleBikeIntoDB = async (id: string, payload: Partial<IBike>) => {
@@ -36,4 +52,5 @@ export const bikeServices = {
   getAllBikes,
   updateSingleBikeIntoDB,
   deleteSingleBikeFromDB,
+  getSingleBikeFromDB,
 }

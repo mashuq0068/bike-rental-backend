@@ -22,7 +22,40 @@ const updateProfile = catchAsync(async (req, res) => {
     data: result,
   })
 })
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await userServices.getAllUsersFromDB()
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Users retrieved successfully',
+    data: result,
+  })
+})
+const updateSingleUser = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const result = await userServices.updateSingleUserIntoDB(id, req.body)
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Users updated successfully',
+    data: result,
+  })
+})
+const deleteSingleUser = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const result = await userServices.deleteSingleUser(id)
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Users deleted successfully',
+    data: result,
+  })
+})
+
 export const userControllers = {
   getProfile,
   updateProfile,
+  getAllUsers,
+  updateSingleUser,
+  deleteSingleUser
 }

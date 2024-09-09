@@ -15,6 +15,7 @@ router.post(
   bikeControllers.createBike,
 )
 router.get('/', bikeControllers.getAllBikes)
+router.get('/:id', bikeControllers.getSingleBike)
 router.put(
   '/:id',
   auth(USER_ROLE.admin),

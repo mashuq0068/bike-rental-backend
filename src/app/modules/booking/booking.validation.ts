@@ -9,6 +9,7 @@ export const createBookingValidationSchema = z.object({
     returnTime: z.string().optional(),
     totalCost: z.number().default(0),
     isReturned: z.boolean().default(false),
+    isPaid: z.boolean().default(false),
   }),
 })
 
@@ -21,5 +22,6 @@ export const updateBookingValidationSchema = z.object({
     returnTime: z.string().optional(),
     totalCost: z.number().optional(),
     isReturned: z.boolean().optional(),
+    isPaid: z.boolean().default(false),
   }),
 })

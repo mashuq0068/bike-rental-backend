@@ -7,4 +7,5 @@ export interface IBooking {
   returnTime?: Date
   totalCost?: number
   isReturned?: boolean
+  isPaid?:boolean
 }

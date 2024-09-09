@@ -12,9 +12,18 @@ const createRental = catchAsync(async (req, res) => {
     data: result,
   })
 })
+const getOwnBookings = catchAsync(async (req, res) => {
+  const result = await bookingServices.getOwnBookingsFromDB(req.user)
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'User profile retrieved successfully',
+    data: result,
+  })
+})
 const returnBike = catchAsync(async (req, res) => {
   const { id } = req.params
-  const result = await bookingServices.returnBikeFromDB(id)
+  const result = await bookingServices.returnBikeFromDB(id, req.body)
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -23,7 +32,7 @@ const returnBike = catchAsync(async (req, res) => {
   })
 })
 const getAllRentals = catchAsync(async (req, res) => {
-  const result = await bookingServices.getAllRentalsFromDB(req.user)
+  const result = await bookingServices.getAllRentalsFromDB()
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -31,8 +40,20 @@ const getAllRentals = catchAsync(async (req, res) => {
     data: result,
   })
 })
+const updateSingleRental = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const result = await bookingServices.updateSingleBooking(id, req.body)
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Rental updated successfully',
+    data: result,
+  })
+})
 export const bookingControllers = {
   createRental,
   getAllRentals,
-  returnBike
+  returnBike,
+  getOwnBookings,
+  updateSingleRental,
 }

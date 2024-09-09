@@ -12,9 +12,19 @@ router.post(
   bookingControllers.createRental,
 )
 router.put('/:id/return', auth(USER_ROLE.admin), bookingControllers.returnBike)
+router.patch(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  bookingControllers.updateSingleRental,
+)
 router.get(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.user),
   bookingControllers.getAllRentals,
+)
+router.get(
+  '/me',
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  bookingControllers.getOwnBookings,
 )
 export const bookingRoutes = router

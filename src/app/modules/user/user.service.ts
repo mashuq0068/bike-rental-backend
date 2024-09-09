@@ -18,7 +18,22 @@ const updateProfileFromDB = async (
   
   return result
 }
+const getAllUsersFromDB = async() => {
+  const result = await User.find()
+  return result
+}
+const updateSingleUserIntoDB = async (id:string , payload:Partial<IUser>) => {
+  const result = await User.findByIdAndUpdate(id , {$set : payload})
+  return result
+}
+const deleteSingleUser = async (id:string) => {
+  const result = await User.deleteOne({_id : id})
+  return result
+}
 export const userServices = {
   getProfileFromDB,
-  updateProfileFromDB
+  updateProfileFromDB,
+  getAllUsersFromDB,
+  updateSingleUserIntoDB,
+  deleteSingleUser
 }
